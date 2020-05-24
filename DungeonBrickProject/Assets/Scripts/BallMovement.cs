@@ -9,6 +9,8 @@ public class BallMovement : MonoBehaviour
     public TrajectoryDisplay mTrajectorySystem;
     public delegate void StartThrow();
     public static event StartThrow OnStartThrow;
+    public delegate void SpellHit();
+    public static event SpellHit OnSpellHit;
     private Vector3 mBallVelocity;
     private bool mIsBallRolling;
     private int mBallDamage = 1;
@@ -83,6 +85,7 @@ public class BallMovement : MonoBehaviour
             if (collision.gameObject.CompareTag("Enemy_Tag"))
             {
                 collision.gameObject.GetComponent<Enemy>().OnHit(mBallDamage);
+                OnSpellHit();
             }
         }    
     }

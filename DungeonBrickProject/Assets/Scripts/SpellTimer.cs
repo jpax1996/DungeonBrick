@@ -13,7 +13,6 @@ public class SpellTimer : MonoBehaviour {
 
     private void Start()
     {
-        Debug.Log("SpellTimer: called");
         BallMovement.OnStartThrow += SetUpSpellTimer;
         mSpellTimeImage = this.transform.GetChild(0).GetComponent<Image>();
         this.gameObject.SetActive(false);
