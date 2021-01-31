@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour {
         this.transform.position = CameraStartPosition.position;
         mTransform = this.transform;
         initialPosition = mTransform.position;
-        BallMovement.OnSpellHit += CameraShake;
+        Enemy.OnEnemyDead += CameraShake;
 	}
 	
 	// Update is called once per frame

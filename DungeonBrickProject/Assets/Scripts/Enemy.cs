@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
+    public HealthBar mHealthBar;
+    public bool mIsAlive;
     private Material mFlashMaterial;
     private Material mDefaultMaterial;
     private SpriteRenderer mSpriteRenderer;
-    private HealthBar mHealthBar;
     private Animator mEnemyAnimator;
+
+    public delegate void EnemyDead();
+    public static event EnemyDead OnEnemyDead;
     private void Start()
     {
         mSpriteRenderer = this.GetComponent<SpriteRenderer>();
         mFlashMaterial = Resources.Load("Flash_Material", typeof(Material)) as Material;
         mDefaultMaterial = mSpriteRenderer.material;
-        mHealthBar = this.GetComponent<HealthBar>();
         mEnemyAnimator = this.GetComponent<Animator>();
+        mIsAlive = true;
     }
 
     public void OnHit(int damage) {
@@ -25,13 +29,16 @@ public class Enemy : MonoBehaviour {
         if (mHealthBar.OnDamaged(damage))
         {
             OnDead();
+            OnEnemyDead();
         }
     }
     
-    void OnDead()
+    public void OnDead()
     {
+        mIsAlive = false;
         mEnemyAnimator.SetBool("isDead",true);
         this.GetComponent<BoxCollider2D>().enabled = false;
+        mHealthBar.gameObject.SetActive(false);
     }
 
     void ResetMaterial()

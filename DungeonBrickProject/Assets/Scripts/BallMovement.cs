@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class BallMovement : MonoBehaviour
 {
-    public Transform mSpawnTransform;
-    public float mMovementSpeed = 2;
+   public float mMovementSpeed = 2;
     public TrajectoryDisplay mTrajectorySystem;
     public delegate void StartThrow();
     public static event StartThrow OnStartThrow;
@@ -13,12 +12,12 @@ public class BallMovement : MonoBehaviour
     public static event SpellHit OnSpellHit;
     private Vector3 mBallVelocity;
     private bool mIsBallRolling;
-    private int mBallDamage = 1;
+    private int mBallDamage = 50;
 
     // Use this for initialization
     void Start()
     {
-        SpellTimer.OnSpellTimeOver += ResetBallState;
+        LevelManager.OnLevelOver += ResetBallState;
         ResetBallState();
     }
 
@@ -31,23 +30,54 @@ public class BallMovement : MonoBehaviour
         }
         else
         {
-            SetupBallLaunch();
-            if (Input.GetButtonDown("Fire1"))
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+
+                // Handle finger movements based on touch phase.
+                switch (touch.phase)
+                {
+                    // Record initial touch position.
+                    case TouchPhase.Began:
+                        SetupBallLaunch(touch);
+                        break;
+                    case TouchPhase.Moved:
+                        SetupBallLaunch(touch);
+                        break;
+                    // Report that a direction has been chosen when the finger is lifted.
+                    case TouchPhase.Ended:
+                        mIsBallRolling = true;
+                        mTrajectorySystem.SetActive(false);
+                        this.GetComponent<TrailRenderer>().enabled = true;
+                        //OnStartThrow();
+                        break;
+                }
+            }
+            if (Input.GetButton("Fire1"))
+            {
+                mTrajectorySystem.SetActive(true);
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mousePosition.z = 0;
+                mBallVelocity = (mousePosition - transform.position).normalized;
+                mTrajectorySystem.RefreshTajectory();
+            } else if (Input.GetButtonUp("Fire1"))
             {
                 mIsBallRolling = true;
                 mTrajectorySystem.SetActive(false);
                 this.GetComponent<TrailRenderer>().enabled = true;
-                OnStartThrow();
+                //OnStartThrow();   
             }
         }
     }
 
-    void SetupBallLaunch()
+    void SetupBallLaunch(Touch currTouch)
     {
         mTrajectorySystem.SetActive(true);
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mousePosition.z = 0;
-        mBallVelocity = (mousePosition - transform.position).normalized;
+        Vector3 touchPosition = Camera.main.ScreenToWorldPoint(currTouch.position);
+        touchPosition.z = 0;
+        mBallVelocity = (touchPosition - transform.position).normalized;
         mTrajectorySystem.RefreshTajectory();
     }
 
@@ -58,7 +88,6 @@ public class BallMovement : MonoBehaviour
   
     private void ResetBallState()
     {
-        transform.position = mSpawnTransform.position;
         mBallVelocity = new Vector3(0, 0, 0);
         mIsBallRolling = false;
         this.GetComponent<TrailRenderer>().enabled = false;
@@ -85,9 +114,12 @@ public class BallMovement : MonoBehaviour
             if (collision.gameObject.CompareTag("Enemy_Tag"))
             {
                 collision.gameObject.GetComponent<Enemy>().OnHit(mBallDamage);
-                OnSpellHit();
             }
-        }    
+            else if (collision.gameObject.name == "BotWallCollider")
+            {
+                ResetBallState();
+            }
+        }
     }
 }
     
