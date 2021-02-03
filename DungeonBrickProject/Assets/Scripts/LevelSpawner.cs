@@ -5,19 +5,14 @@ using UnityEngine;
 
 public class LevelSpawner : MonoBehaviour
 {
-
-    const string BAT_PREFAB_NAME = "BatPrefab";
-
-    public GameObject mPlayerPrefab;
     public GameObject mBatPrefab;
-    public Transform mPlayerSpawnTrans;
     public Transform mEnemiesParentTrans;
     public Transform mSpawnedEnemiesTrans;
     
+    const string BAT_PREFAB_NAME = "BatPrefab";
     // Start is called before the first frame update
     public void SpawnEntities()
     {
-        Instantiate(mPlayerPrefab, mPlayerSpawnTrans.position, mPlayerSpawnTrans.rotation, this.transform);
         foreach (Transform child in mEnemiesParentTrans)
         {
             if (child.name.Contains(BAT_PREFAB_NAME))

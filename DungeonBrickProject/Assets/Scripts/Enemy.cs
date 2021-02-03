@@ -13,10 +13,12 @@ public class Enemy : MonoBehaviour {
 
     public delegate void EnemyDead();
     public static event EnemyDead OnEnemyDead;
+
+    const string FLASH_MATERIAL_NAME = "Flash_Material";
     private void Start()
     {
         mSpriteRenderer = this.GetComponent<SpriteRenderer>();
-        mFlashMaterial = Resources.Load("Flash_Material", typeof(Material)) as Material;
+        mFlashMaterial = Resources.Load(FLASH_MATERIAL_NAME, typeof(Material)) as Material;
         mDefaultMaterial = mSpriteRenderer.material;
         mEnemyAnimator = this.GetComponent<Animator>();
         mIsAlive = true;
