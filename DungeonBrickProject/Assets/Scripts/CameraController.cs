@@ -5,6 +5,9 @@ using UnityEngine;
 public class CameraController : MonoBehaviour {
     public Transform CameraStartPosition;
 
+    public float mDefaulAspect = 1.5f;
+    public float mDefaultOrthoSize = 9f;
+    private Resolution mCurrResolution;
     // Transform of the GameObject you want to shake
     private Transform mTransform;
 
@@ -22,7 +25,7 @@ public class CameraController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        this.transform.position = CameraStartPosition.position;
+        
         mTransform = this.transform;
         initialPosition = mTransform.position;
         Enemy.OnEnemyDead += CameraShake;
@@ -30,6 +33,10 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if(mCurrResolution.width != Screen.currentResolution.width || mCurrResolution.height != Screen.currentResolution.height)
+        {
+            SetUpCameraOrthoSize();
+        }
         if (shakeDuration > 0)
         {
             transform.localPosition = initialPosition + Random.insideUnitSphere * shakeMagnitude;
@@ -46,5 +53,14 @@ public class CameraController : MonoBehaviour {
     private void CameraShake()
     {
         shakeDuration = 0.08f;
+    }
+
+    private void SetUpCameraOrthoSize()
+    {
+        mCurrResolution = Screen.currentResolution;
+        float deviceApect = Screen.height / Screen.width;
+        Camera.main.orthographicSize = (deviceApect / mDefaulAspect) * mDefaultOrthoSize;
+
+        this.transform.position = CameraStartPosition.position;
     }
 }
