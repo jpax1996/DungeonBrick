@@ -58,7 +58,7 @@ public class CameraController : MonoBehaviour {
     private void SetUpCameraOrthoSize()
     {
         mCurrResolution = Screen.currentResolution;
-        float deviceApect = Screen.height / Screen.width;
+        float deviceApect = ((float) Screen.height / (float) Screen.width);
         Camera.main.orthographicSize = (deviceApect / mDefaulAspect) * mDefaultOrthoSize;
 
         this.transform.position = CameraStartPosition.position;

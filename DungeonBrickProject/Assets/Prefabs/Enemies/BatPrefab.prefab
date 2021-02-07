@@ -165,6 +165,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8f5a674d479b649b59961b180789ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mLevel: 1
+  mBaseDamage: 5
+  mAdditionalDamage: 5
+  mBaseDefense: 30
+  mMaxHealth: 100
   mHealthBar: {fileID: 461972061679392616}
 --- !u!1 &450593095905174446
 GameObject:

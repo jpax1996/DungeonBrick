@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : EntityStats {
 
     public HealthBar mHealthBar;
-    public bool mIsAlive;
+    private bool mIsAlive;
     private Material mFlashMaterial;
     private Material mDefaultMaterial;
     private SpriteRenderer mSpriteRenderer;
@@ -21,10 +21,13 @@ public class Enemy : MonoBehaviour {
         mFlashMaterial = Resources.Load(FLASH_MATERIAL_NAME, typeof(Material)) as Material;
         mDefaultMaterial = mSpriteRenderer.material;
         mEnemyAnimator = this.GetComponent<Animator>();
+        mHealthBar.SetMaxHealth(mMaxHealth);
+        mHealthBar.SetCurrentHealth(mMaxHealth);
         mIsAlive = true;
     }
 
-    public void OnHit(int damage) {
+    public void OnHit(EntityStats PlayerStats) {
+        int damage = CalculateDamageReceived(PlayerStats);
         mSpriteRenderer.material = mFlashMaterial;
         Invoke("ResetMaterial", .1f);
 
@@ -48,4 +51,8 @@ public class Enemy : MonoBehaviour {
         mSpriteRenderer.material = mDefaultMaterial;
     }
 
+    public bool IsAlive()
+    {
+        return mIsAlive;
+    }
 }

@@ -9,6 +9,7 @@ public class LevelManager : MonoBehaviour {
     public GameObject mPlayerPrefab;
     public GameObject[] mEpisode1Levels;
     public Transform mLevelStartingTransform;
+    public GameObject mPlayerHealthBarObj;
 
     private GameObject mCurrentLevel;
     private GameObject mPreviousLevel;
@@ -42,7 +43,8 @@ public class LevelManager : MonoBehaviour {
         mPlayerSpawnTrans = mCurrentLevel.transform.Find(PLAYER_SPAWN_NAME);
         if(mPlayerGameObject == null)
         {
-              mPlayerGameObject = Instantiate(mPlayerPrefab, mPlayerSpawnTrans.position, mPlayerSpawnTrans.rotation, this.transform);
+            mPlayerGameObject = Instantiate(mPlayerPrefab, mPlayerSpawnTrans.position, mPlayerSpawnTrans.rotation, this.transform);
+            mPlayerGameObject.GetComponent<PlayerManager>().SetPlayerHealthBar(mPlayerHealthBarObj);
         }
         else
         {
@@ -72,7 +74,7 @@ public class LevelManager : MonoBehaviour {
     {
         foreach (Enemy currEnemy in mAllEnemyList) 
         {
-            if (currEnemy.mIsAlive)
+            if (currEnemy.IsAlive())
             {
                 return;
             }

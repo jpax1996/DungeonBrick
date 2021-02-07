@@ -13,10 +13,11 @@ public class BallMovement : MonoBehaviour
     private Vector3 mBallVelocity;
     private bool mIsBallRolling;
     private int mBallDamage = 50;
-
+    private PlayerManager mPlayerManager;
     // Use this for initialization
     void Start()
     {
+        mPlayerManager = this.GetComponent<PlayerManager>();
         LevelManager.OnLevelOver += ResetBallState;
         ResetBallState();
     }
@@ -113,7 +114,7 @@ public class BallMovement : MonoBehaviour
             }
             if (collision.gameObject.CompareTag("Enemy_Tag"))
             {
-                collision.gameObject.GetComponent<Enemy>().OnHit(mBallDamage);
+                mPlayerManager.OnHitEnemy(collision.gameObject);
             }
             else if (collision.gameObject.name == "BotWallCollider")
             {

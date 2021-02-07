@@ -10,7 +10,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - LevelTransition
   - Water
   - UI
   - 
@@ -57,4 +57,7 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 3164949121
+    locked: 0
+  - name: LevelTransition
+    uniqueID: 532707911
     locked: 0

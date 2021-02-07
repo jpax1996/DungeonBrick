@@ -6,18 +6,31 @@ using UnityEngine;
 public class HealthBar : MonoBehaviour {
 
     public Slider mHealthSlider;
-    private float mCurrHealth;
+    private int mMaxHealth;
+    private int mCurrentHealth;
+
+    public void SetCurrentHealth(int health)
+    {
+        mCurrentHealth = health;
+    }
+
+    public void SetMaxHealth(int maxHealth){
+        mMaxHealth = maxHealth;
+    }
 
     public bool OnDamaged( int damage)
     {
-        float currHealth = mHealthSlider.value;
-        currHealth = currHealth - damage;
-        if (currHealth < 0)
+        mCurrentHealth -= damage;
+        if (mCurrentHealth < 0)
         {
-            currHealth = 0;
+            mCurrentHealth = 0;
+            mHealthSlider.value = 0;
         }
-        mHealthSlider.value = currHealth;
-        return currHealth <= 0;
+        else
+        { 
+            mHealthSlider.value = ((float)mCurrentHealth / (float)mMaxHealth) * 100;
+        }
+        return mCurrentHealth <= 0;
 
     }
 
