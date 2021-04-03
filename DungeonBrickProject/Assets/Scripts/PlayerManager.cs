@@ -5,8 +5,10 @@ using UnityEngine.UI;
 
 public class PlayerManager : EntityStats
 {
+    private Transform mSpawnTransform;
     private PlayerHealthBar mPlayerHealthBar;
     private ExperienceManager mExperienceManager;
+    private ThrowCounterManager mThrowCounterManager;
     public delegate void KilledEnemy();
     public static event KilledEnemy OnKilledEnemy;
 
@@ -24,6 +26,11 @@ public class PlayerManager : EntityStats
         
     }
     
+    public void SetSpawnTransform(Transform spawnTransform)
+    {
+        mSpawnTransform = spawnTransform;
+    }
+
     public void SetPlayerHealthBar(GameObject HealthBarObj)
     {
         mPlayerHealthBar = HealthBarObj.GetComponent<PlayerHealthBar>();
@@ -32,9 +39,15 @@ public class PlayerManager : EntityStats
         mPlayerHealthBar.SetCurrentHealth(mMaxHealth);
     }
 
-    public void SetExperienceManager(GameObject ExperienceManagerObj)
+    public void SetExperienceManager(GameObject experienceManagerObj)
     {
-        mExperienceManager = ExperienceManagerObj.GetComponent<ExperienceManager>();
+        mExperienceManager = experienceManagerObj.GetComponent<ExperienceManager>();
+    }
+    
+    public void SetThrowCounterManager(GameObject throwCounterManagerObj)
+    {
+        mThrowCounterManager = throwCounterManagerObj.GetComponent<ThrowCounterManager>();
+        mThrowCounterManager.SetMaxThrows(mMaxThrows);
     }
 
     public void OnHitEnemy(GameObject EnemyObj)
@@ -60,11 +73,19 @@ public class PlayerManager : EntityStats
     public void ResetThrow()
     {
         mExperienceManager.ResetCombo();
+        mThrowCounterManager.DecreaseCounter();
         this.GetComponent<BallMovement>().StopBallMovement();
     }
 
     public void EnableThrow()
     {
         this.GetComponent<BallMovement>().SetEnableThrow(true);
+    }
+
+    public void ResetState()
+    {
+        mThrowCounterManager.ResetCounter();
+        this.transform.position = mSpawnTransform.position;
+        this.transform.rotation= mSpawnTransform.rotation;
     }
 }

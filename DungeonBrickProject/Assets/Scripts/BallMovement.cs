@@ -54,7 +54,7 @@ public class BallMovement : MonoBehaviour
                             mIsBallRolling = true;
                             mTrajectorySystem.SetActive(false);
                             this.GetComponent<TrailRenderer>().enabled = true;
-                            //OnStartThrow();
+                            OnStartThrow();
                             break;
                     }
                 }

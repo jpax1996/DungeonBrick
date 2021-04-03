@@ -9,6 +9,7 @@ public class EntityStats : MonoBehaviour
     public int mAdditionalDamage;
     public int mBaseDefense;
     public int mMaxHealth;
+    public int mMaxThrows;
 
     protected int CalculateDamageReceived(EntityStats attackingEntity)
     {

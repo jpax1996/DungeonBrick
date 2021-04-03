@@ -11,6 +11,7 @@ public class LevelManager : MonoBehaviour {
     public Transform mLevelStartingTransform;
     public GameObject mPlayerHealthBarObj;
     public GameObject mExperienceManager;
+    public GameObject mThrowCounterManager;
 
     private GameObject mCurrentLevel;
     private GameObject mPreviousLevel;
@@ -34,8 +35,31 @@ public class LevelManager : MonoBehaviour {
         GameObject[] arr = mEpisode1Levels.OrderBy(x => rnd.Next()).ToArray();
         PlayerManager.OnKilledEnemy += IsLevelOver;
         LevelTransitionController.OnLoadingInOver += StartLevel;
-        LevelTransitionController.OnLoadingOutOver += SpawnNextLevel;
+        LevelTransitionController.OnLoadingOutOver += LoadingOutOver;
+        InstantiatePlayer();
         SpawnNextLevel();
+        ResetPlayer();
+    }
+
+    private void LoadingOutOver()
+    {
+        SpawnNextLevel();
+        ResetPlayer();
+    }
+    private void ResetPlayer()
+    {
+        mPlayerGameObject.GetComponent<PlayerManager>().ResetState();
+    }
+    private void InstantiatePlayer()
+    {
+        if (mPlayerGameObject == null)
+        {
+            mPlayerGameObject = Instantiate(mPlayerPrefab, new Vector3(0,0,0), new Quaternion(0,0,0,0), this.transform);
+            PlayerManager currentPlayerManager = mPlayerGameObject.GetComponent<PlayerManager>();
+            currentPlayerManager.SetPlayerHealthBar(mPlayerHealthBarObj);
+            currentPlayerManager.SetExperienceManager(mExperienceManager);
+            currentPlayerManager.SetThrowCounterManager(mThrowCounterManager);
+        }
     }
 
     private void SpawnNextLevel()
@@ -45,19 +69,12 @@ public class LevelManager : MonoBehaviour {
             Destroy(mCurrentLevel);
         }
         mCurrentLevel = Instantiate(mEpisode1Levels[mLevelCpt], mLevelStartingTransform.position, mLevelStartingTransform.rotation);
+        
         mPlayerSpawnTrans = mCurrentLevel.transform.Find(PLAYER_SPAWN_NAME);
-        if(mPlayerGameObject == null)
-        {
-            mPlayerGameObject = Instantiate(mPlayerPrefab, mPlayerSpawnTrans.position, mPlayerSpawnTrans.rotation, this.transform);
-            mPlayerGameObject.GetComponent<PlayerManager>().SetPlayerHealthBar(mPlayerHealthBarObj);
-            mPlayerGameObject.GetComponent<PlayerManager>().SetExperienceManager(mExperienceManager);
-        }
-        else
-        {
-            mPlayerGameObject.transform.position = mPlayerSpawnTrans.position;
-            mPlayerGameObject.transform.rotation= mPlayerSpawnTrans.rotation;
-        }
+        PlayerManager currentPlayerManager = mPlayerGameObject.GetComponent<PlayerManager>();
+        currentPlayerManager.SetSpawnTransform(mPlayerSpawnTrans);
         mCurrentLevel.GetComponent<LevelSpawner>().SpawnEntities();
+        
         InitializeEnemyList();
         
         mLevelCpt++;

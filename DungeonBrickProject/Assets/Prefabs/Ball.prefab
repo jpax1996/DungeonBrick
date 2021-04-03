@@ -299,3 +299,4 @@ MonoBehaviour:
   mAdditionalDamage: 0
   mBaseDefense: 50
   mMaxHealth: 100
+  mMaxThrows: 5
