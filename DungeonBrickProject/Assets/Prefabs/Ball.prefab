@@ -296,6 +296,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mLevel: 1
   mBaseDamage: 50
-  mAdditionalDamage: 10
+  mAdditionalDamage: 0
   mBaseDefense: 50
   mMaxHealth: 100

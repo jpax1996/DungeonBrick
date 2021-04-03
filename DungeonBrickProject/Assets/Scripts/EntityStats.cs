@@ -13,10 +13,10 @@ public class EntityStats : MonoBehaviour
     protected int CalculateDamageReceived(EntityStats attackingEntity)
     {
         int attackDamage = attackingEntity.mBaseDamage + attackingEntity.mAdditionalDamage;
-        float rngFactor = Random.Range(0.80f,1.0f);
+        /*// float rngFactor = Random.Range(0.80f,1.0f);
         float attackDamageRatio = ((float) attackDamage / (float) this.mBaseDefense);
         float totalDamage = attackDamageRatio * attackingEntity.mBaseDamage;
-        totalDamage *= rngFactor;
-        return Mathf.RoundToInt(totalDamage);
+        //totalDamage *= rngFactor;*/
+        return Mathf.RoundToInt(attackDamage);
     }
 }

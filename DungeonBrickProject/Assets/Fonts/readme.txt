@@ -1,7 +1,23 @@
-ï»¿The font file in this archive was created by Andrew Tyler www.AndrewTyler.net and font@andrewtyler.net
+M04_FATAL FURY & FATAL FURY BLACK (2000/8/11 Ver.2.0) for Windows
+u‰ì˜T“`àƒVƒŠ[ƒY(1991`,SNK)v•—ƒtƒHƒ“ƒgB
+‚¨“éõ‚Ý‚ÌA‚¢‚í‚ä‚é‰ì˜TƒtƒHƒ“ƒgBSNK‚ç‚µ‚³‚ª‚æ‚­o‚Ä‚¢‚Ü‚·‚ËB
+uVvEuQvEu!vEu?vEu,v‚É‚Â‚¢‚Ä‚ÍŽè•`‚«‚Å‚·‚ª
+ˆÓŠO‚Æˆá˜aŠ´‚Ì‚È‚¢Ždã‚ª‚è‚É‚È‚Á‚Ä‚¢‚é‚ÆŽv‚¢‚Ü‚·B
 
-Use at 12 or 24 px size with anti-alising off for best results.
+¡‰ñ‚Í‰Žæ‚è”Å(FATAL FURY)‚Æƒxƒ^“h‚è”Å(FATAL FURY BLACK)‚Ì
+2Ží—Þ‚ð“¯«‚µ‚Ä‚¢‚Ü‚·B—¼ƒo[ƒWƒ‡ƒ“‚ðd‚Ë‚ÄŽg—p‚·‚ê‚Î
+‚ ‚Ì•¶Žš‚Ì•µˆÍ‹C‚ª—eˆÕ‚ÉÄŒ»‚Å‚«‚Ü‚·B
 
+E‚±‚ÌƒtƒHƒ“ƒg‚ÍƒtƒŠ[ƒEƒFƒA‚Å‚·‚ªA
+@ìŽÒ‚Ì‹–‰Â‚È‚­”Ì”„‚µ‚½‚èA‰c—˜–Ú“I‚Ì»•i‚É“Y•t‚·‚éŽ–‚Í
+@ŒÅ‚­‹Ö‚¶‚³‚¹‚Ä’¸‚«‚Ü‚·B
+@‚È‚¨A‚±‚ÌƒtƒHƒ“ƒg‚ðŽg—p‚µ‚Ä‚Ì‚¢‚©‚È‚é‘¹ŠQ‚É‚Â‚¢‚Ä‚à
+@ìŽÒ‚ÍÓ”C‚ð•‰‚í‚È‚¢‚à‚Ì‚Æ‚µ‚Ü‚·B
+@ŒäˆÓŒ©AŒäŠ´‘z‚È‚Ç‚æ‚ë‚µ‚¯‚ê‚Îƒ[ƒ‹‚­‚¾‚³‚¢B
 
+COPYRIGHT (c) 2000
+‚Ë‚± / Miffies
+ALL RIGHTS RESERVED.
 
-
+http://mfs.jp.org/
+mailto:neko@flashmail.com

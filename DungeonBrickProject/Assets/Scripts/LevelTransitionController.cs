@@ -26,7 +26,7 @@ public class LevelTransitionController : MonoBehaviour
     void Start()
     {
         mLoadImage = this.GetComponent<Image>();
-        mLoadImage.material.SetFloat("_CutOff", 1.1f);
+        mLoadImage.material.SetFloat(CUTOFF_SHADER_REFERENCE, 1.1f);
         LevelManager.OnLevelOver += StartLoadingOut;
     }
 
@@ -67,10 +67,10 @@ public class LevelTransitionController : MonoBehaviour
     private void LoadeIn()
     {
         mLoadImage.material.SetFloat(CUTOFF_SHADER_REFERENCE, Mathf.MoveTowards(mLoadImage.material.GetFloat(CUTOFF_SHADER_REFERENCE), 1.1f, transitionSpeed * Time.deltaTime));
-        if(mLoadImage.material.GetFloat(CUTOFF_SHADER_REFERENCE) == -0.1f - mLoadImage.material.GetFloat(EDGE_SMOOTHING_SHADER_REFERENCE))
+        if(mLoadImage.material.GetFloat(CUTOFF_SHADER_REFERENCE) == 1.1f)
         {
             mStartLoadingIn = false;
-            //OnLoadingInOver();
+            OnLoadingInOver();
         }
     }
 

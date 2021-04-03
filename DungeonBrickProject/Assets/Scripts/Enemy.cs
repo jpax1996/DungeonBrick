@@ -26,7 +26,7 @@ public class Enemy : EntityStats {
         mIsAlive = true;
     }
 
-    public void OnHit(EntityStats PlayerStats) {
+    public bool OnHit(EntityStats PlayerStats) {
         int damage = CalculateDamageReceived(PlayerStats);
         mSpriteRenderer.material = mFlashMaterial;
         Invoke("ResetMaterial", .1f);
@@ -35,7 +35,9 @@ public class Enemy : EntityStats {
         {
             OnDead();
             OnEnemyDead();
+            return true;
         }
+        return false;
     }
     
     public void OnDead()

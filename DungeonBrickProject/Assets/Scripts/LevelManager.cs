@@ -10,6 +10,7 @@ public class LevelManager : MonoBehaviour {
     public GameObject[] mEpisode1Levels;
     public Transform mLevelStartingTransform;
     public GameObject mPlayerHealthBarObj;
+    public GameObject mExperienceManager;
 
     private GameObject mCurrentLevel;
     private GameObject mPreviousLevel;
@@ -17,6 +18,9 @@ public class LevelManager : MonoBehaviour {
     private List<Enemy> mAllEnemyList;
     private Transform mPlayerSpawnTrans;
     private GameObject mPlayerGameObject;
+    
+    public delegate void LevelStart();
+    public static event LevelStart OnLevelStart;
 
     public delegate void LevelOver();
     public static event LevelOver OnLevelOver;
@@ -28,7 +32,8 @@ public class LevelManager : MonoBehaviour {
         mAllEnemyList = new List<Enemy>();
         System.Random rnd = new System.Random();
         GameObject[] arr = mEpisode1Levels.OrderBy(x => rnd.Next()).ToArray();
-        Enemy.OnEnemyDead += IsLevelOver;
+        PlayerManager.OnKilledEnemy += IsLevelOver;
+        LevelTransitionController.OnLoadingInOver += StartLevel;
         LevelTransitionController.OnLoadingOutOver += SpawnNextLevel;
         SpawnNextLevel();
     }
@@ -45,6 +50,7 @@ public class LevelManager : MonoBehaviour {
         {
             mPlayerGameObject = Instantiate(mPlayerPrefab, mPlayerSpawnTrans.position, mPlayerSpawnTrans.rotation, this.transform);
             mPlayerGameObject.GetComponent<PlayerManager>().SetPlayerHealthBar(mPlayerHealthBarObj);
+            mPlayerGameObject.GetComponent<PlayerManager>().SetExperienceManager(mExperienceManager);
         }
         else
         {
@@ -80,6 +86,11 @@ public class LevelManager : MonoBehaviour {
             }
         }
         OnLevelOver();
+    }
+
+    private void StartLevel()
+    {
+        OnLevelStart();
     }
 
     void Update()

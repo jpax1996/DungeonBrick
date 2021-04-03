@@ -6,20 +6,22 @@ public class BallMovement : MonoBehaviour
 {
    public float mMovementSpeed = 2;
     public TrajectoryDisplay mTrajectorySystem;
+
     public delegate void StartThrow();
     public static event StartThrow OnStartThrow;
     public delegate void SpellHit();
     public static event SpellHit OnSpellHit;
+
     private Vector3 mBallVelocity;
     private bool mIsBallRolling;
-    private int mBallDamage = 50;
+    private bool mAimingEnbaled;
     private PlayerManager mPlayerManager;
+
     // Use this for initialization
     void Start()
     {
         mPlayerManager = this.GetComponent<PlayerManager>();
-        LevelManager.OnLevelOver += ResetBallState;
-        ResetBallState();
+        StopBallMovement();
     }
 
     // Update is called once per frame
@@ -31,42 +33,45 @@ public class BallMovement : MonoBehaviour
         }
         else
         {
-            if (Input.touchCount > 0)
+            if (mAimingEnbaled)
             {
-                Touch touch = Input.GetTouch(0);
-
-                // Handle finger movements based on touch phase.
-                switch (touch.phase)
+                if (Input.touchCount > 0)
                 {
-                    // Record initial touch position.
-                    case TouchPhase.Began:
-                        SetupBallLaunch(touch);
-                        break;
-                    case TouchPhase.Moved:
-                        SetupBallLaunch(touch);
-                        break;
-                    // Report that a direction has been chosen when the finger is lifted.
-                    case TouchPhase.Ended:
-                        mIsBallRolling = true;
-                        mTrajectorySystem.SetActive(false);
-                        this.GetComponent<TrailRenderer>().enabled = true;
-                        //OnStartThrow();
-                        break;
+                    Touch touch = Input.GetTouch(0);
+
+                    // Handle finger movements based on touch phase.
+                    switch (touch.phase)
+                    {
+                        // Record initial touch position.
+                        case TouchPhase.Began:
+                            SetupBallLaunch(touch);
+                            break;
+                        case TouchPhase.Moved:
+                            SetupBallLaunch(touch);
+                            break;
+                        // Report that a direction has been chosen when the finger is lifted.
+                        case TouchPhase.Ended:
+                            mIsBallRolling = true;
+                            mTrajectorySystem.SetActive(false);
+                            this.GetComponent<TrailRenderer>().enabled = true;
+                            //OnStartThrow();
+                            break;
+                    }
                 }
-            }
-            if (Input.GetButton("Fire1"))
-            {
-                mTrajectorySystem.SetActive(true);
-                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                mousePosition.z = 0;
-                mBallVelocity = (mousePosition - transform.position).normalized;
-                mTrajectorySystem.RefreshTajectory();
-            } else if (Input.GetButtonUp("Fire1"))
-            {
-                mIsBallRolling = true;
-                mTrajectorySystem.SetActive(false);
-                this.GetComponent<TrailRenderer>().enabled = true;
-                //OnStartThrow();   
+                if (Input.GetButton("Fire1"))
+                {
+                    mTrajectorySystem.SetActive(true);
+                    Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    mousePosition.z = 0;
+                    mBallVelocity = (mousePosition - transform.position).normalized;
+                    mTrajectorySystem.RefreshTajectory();
+                } else if (Input.GetButtonUp("Fire1"))
+                {
+                    mIsBallRolling = true;
+                    mTrajectorySystem.SetActive(false);
+                    this.GetComponent<TrailRenderer>().enabled = true;
+                    //OnStartThrow();   
+                }
             }
         }
     }
@@ -87,11 +92,16 @@ public class BallMovement : MonoBehaviour
         return mBallVelocity;
     }
   
-    private void ResetBallState()
+    public void StopBallMovement()
     {
         mBallVelocity = new Vector3(0, 0, 0);
         mIsBallRolling = false;
         this.GetComponent<TrailRenderer>().enabled = false;
+    }
+    
+    public void SetEnableThrow(bool isThrowEnabled)
+    {
+        mAimingEnbaled = isThrowEnabled;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -118,8 +128,7 @@ public class BallMovement : MonoBehaviour
             }
             else if (collision.gameObject.name == "BotWallCollider")
             {
-                ResetBallState();
-            }
+                mPlayerManager.ResetThrow();            }
         }
     }
 }
