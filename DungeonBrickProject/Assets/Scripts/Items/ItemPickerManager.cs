@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ItemPickerManager : MonoBehaviour
 {
-    public ItemDatabase items;
-
+    public ItemDatabase mItems;
+    private List<Item> mItemRotation;
     private static ItemPickerManager instance;
 
 
@@ -24,7 +24,7 @@ public class ItemPickerManager : MonoBehaviour
 
     public static Item GetItemByID(string ID)
     {
-        foreach(Item item in instance.items.mAllItems)
+        foreach(Item item in instance.mItems.mAllItems)
         {
             if(item.ItemID == ID)
             {
@@ -34,8 +34,39 @@ public class ItemPickerManager : MonoBehaviour
         return null;
     }
 
-    public static Item GetRandomItem(string ID)
+    public static Item GetRandomItem()
     {
-        return instance.items.mAllItems[Random.Range(0, instance.items.mAllItems.Count)];
+        return instance.mItems.mAllItems[Random.Range(0, instance.mItems.mAllItems.Count)];
     }
+
+    public Item[] GetRandomItems(int numberItems)
+    {
+        mItemRotation = mItems.mAllItems;
+        ShuffleItemRotation();
+        Item[] randomItems = new Item[numberItems];
+        int cpt = 0;
+        for (int i = 0; i<numberItems; i++)
+        {
+            if (cpt >= mItemRotation.Count)
+            {
+                cpt = 0;
+            }
+            randomItems[i] = mItemRotation[cpt];
+            cpt++;
+        }
+        return randomItems;
+    }
+
+
+    private void ShuffleItemRotation()
+    {
+        for (int i = 0; i < mItemRotation.Count; i++)
+        {
+            Item temp = mItemRotation[i];
+            int randomIndex = Random.Range(i, mItemRotation.Count);
+            mItemRotation[i] = mItemRotation[randomIndex];
+            mItemRotation[randomIndex] = temp;
+        }
+    }
+
 }

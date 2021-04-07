@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class DisplayInventory : MonoBehaviour
 {
-    public InventoryManager mInventory;
     public GameObject mSlotPrefab;
 
     private PlayerManager mPlayerManager;
+    private InventoryManager mInventory;
 
     public int X_START;
     public int Y_START;
@@ -20,6 +21,7 @@ public class DisplayInventory : MonoBehaviour
     void Start()
     {
         mPlayerManager = GameManager.GetPlayerManager();
+        mInventory = GameManager.GetInventoryManager();
         gameObject.SetActive(false);
         UpdateDisplay();
     }
@@ -52,6 +54,8 @@ public class DisplayInventory : MonoBehaviour
                 obj = Instantiate(mSlotPrefab,Vector3.zero,Quaternion.identity, transform);
                 obj.GetComponent<RectTransform>().localPosition = GetPosition(i);
                 obj.GetComponentInChildren<TextMeshProUGUI>().text = slot.mAmount.ToString("n0");
+                Image itemImg = obj.transform.Find("ItemSprite_img").GetComponent<Image>();
+                itemImg.sprite = slot.mItemObject.mItemSprite;
                 mItemsDisplayed.Add(slot, obj);
             }
             else

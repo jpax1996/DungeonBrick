@@ -14,7 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mItemList:
   - mItemObject: {fileID: 11400000, guid: efa9d060ac2ce164789748bc009f2ebc, type: 2}
-    mAmount: 5
-  - mItemObject: {fileID: 11400000, guid: efa9d060ac2ce164789748bc009f2ebc, type: 2}
-    mAmount: 10
-  mItemPicker: {fileID: 0}
+    mAmount: 2

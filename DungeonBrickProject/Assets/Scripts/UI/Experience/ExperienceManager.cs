@@ -28,6 +28,7 @@ public class ExperienceManager : MonoBehaviour
     private int mCurrentHitCombo = 0;
     private int mCurrentKillCombo = 0;
     private int mTargetXP = 0;
+    private bool mIslevelingUp = false;
 
     private bool mUpdatingXPBar = false;
 
@@ -35,10 +36,14 @@ public class ExperienceManager : MonoBehaviour
     public Text mXPComboText;
     public Text mXPText;
 
+
+    public delegate void LevelUp();
+    public static event LevelUp OnLevelUp;
     private void Start()
     {
         BallMovement.OnThrowOver += ResetCombo;
         LevelManager.OnLevelOver += ResetCombo;
+        ItemPickerDisplay.OnItemPicked += PerformLevelUp;
 
         mExperienceSlider.value = 0;
         mCurrentXPMax = mFirstLevelXPMax;
@@ -67,7 +72,6 @@ public class ExperienceManager : MonoBehaviour
     public void ResetCombo()
     {
         StartUpdatingXPBar();
-        //mCurrentXP += mCurrentXPCombo;
         mCurrentHitCombo = 0;
         mCurrentKillCombo = 0;
         ResetComboText();
@@ -126,9 +130,10 @@ public class ExperienceManager : MonoBehaviour
 
         if(mCurrentXP == mTargetXP) 
         {
-            if(mCurrentXP >= mCurrentXPMax)
+            if(mCurrentXP >= mCurrentXPMax && !mIslevelingUp)
             {
-                PerformLevelUp();
+                OnLevelUp();
+                mIslevelingUp = true;
             }
             else
             {
@@ -150,6 +155,7 @@ public class ExperienceManager : MonoBehaviour
         SetXPTarget();
         mExperienceSlider.value = mCurrentXP;
         mUpdatingXPBar = mTargetXP != mCurrentXP ? true : false;
+        mIslevelingUp = false;
     }
 
     private void SetXPTarget()

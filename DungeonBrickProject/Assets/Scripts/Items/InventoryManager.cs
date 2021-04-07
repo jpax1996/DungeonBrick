@@ -6,7 +6,6 @@ using UnityEngine;
 public class InventoryManager : ScriptableObject
 {
     public List<InventorySlot> mItemList;
-    public ItemPickerManager mItemPicker;
 
     public void ItemPickup(Item itemPickedUp, int amount)
     {

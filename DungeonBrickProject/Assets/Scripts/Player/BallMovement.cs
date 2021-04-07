@@ -93,7 +93,6 @@ public class BallMovement : MonoBehaviour
         Vector3 fromDir = transform.up;
         Vector3 targetDir = targetPosition - transform.position;
         float angle = Vector2.Angle(fromDir, targetDir);
-        print(angle);
         return angle > MAX_AIMING_ANGLE ? false : true;
     }
 
