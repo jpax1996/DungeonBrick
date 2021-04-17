@@ -5,70 +5,64 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public GameObject mPlayerPrefab;
-    //public GameObject mPlayerHealthBarObj;
-    private PlayerManager mPlayerManager;
+    public GameObject mPlayerObject;
+    public PlayerManager mPlayerManager;
     public ExperienceManager mExperienceManager;
     public ThrowCounterManager mThrowCounterManager;
     public LevelManager mLevelManager;
     public InventoryManager mInventoryManager;
+    public DisplayInventory mDisplayInventory;
     private static GameManager instance;
-
+    public static GameManager mInstance { get { return instance; } }
+    public bool mGameStarted = false;
 
     private void Awake()
     {
-        if (instance == null)
+        if (instance != null && instance != this)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(this.gameObject);
         }
         else
         {
-            Destroy(gameObject);
+            instance = this;
         }
-        OnStartGame();
+        mGameStarted = false;
+        if (mPlayerObject == null)
+        {
+            InstantiatePlayer();
+        }
     }
 
-
-    /*private void Start()
+    public void StartGame()
     {
-        OnStartGame();
-    }*/
+        mPlayerManager.Initialize();
+        mLevelManager.Initialize();
+        mInventoryManager.Initialize(mPlayerManager);
+        mExperienceManager.Initialize();
+        mDisplayInventory.Initialize();
+        mThrowCounterManager.Initialize();
+        GameEvents.current.GameStart();
+        mGameStarted = false;
+    }
 
-    private void OnStartGame()
+    public void RestartGame()
     {
-        InstantiatePlayer();
-        mLevelManager.Initialize(mPlayerManager);
-        mLevelManager.InitializeFirstLevel();
+        GameEvents.current.GameRestart();
+        StartGame();
     }
 
     private void InstantiatePlayer()
     {
-        GameObject PlayerGameObject = Instantiate(mPlayerPrefab, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), this.transform);
-        mPlayerManager = PlayerGameObject.GetComponent<PlayerManager>();
+        mInstance.mPlayerObject = Instantiate(mInstance.mPlayerPrefab, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), this.transform);
+        mInstance.mPlayerManager = mInstance.mPlayerObject.GetComponent<PlayerManager>();
     }
 
-    public static PlayerManager GetPlayerManager()
+    private void Update()
     {
-        return instance.mPlayerManager;
-    }
-
-    public static ExperienceManager GetExperienceManager()
-    {
-        return instance.mExperienceManager;
-    }
-    
-    public static ThrowCounterManager GetThrowCounterManager()
-    {
-        return instance.mThrowCounterManager;
-    }
-    
-    public static LevelManager GetLevelManager()
-    {
-        return instance.mLevelManager;
-    }
-    
-    public static InventoryManager GetInventoryManager()
-    {
-        return instance.mInventoryManager;
+        if(mGameStarted == false)
+        {
+            StartGame();
+            mGameStarted = true;
+        }
     }
 }

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 656236342752635549}
   - component: {fileID: 656933723825183827}
   - component: {fileID: 4865421257229215043}
+  - component: {fileID: 8581948738245670751}
   m_Layer: 9
   m_Name: Ball
   m_TagString: Ball_Tag
@@ -139,6 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mMovementSpeed: 14
+  MAX_AIMING_ANGLE: 80
   mTrajectorySystem: {fileID: 711188470324808225}
 --- !u!114 &711188470324808225
 MonoBehaviour:
@@ -294,9 +296,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e85c8cf99b8bfa147ae1e2882d275ed4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mLevel: 1
-  mBaseDamage: 50
-  mAdditionalDamage: 0
-  mBaseDefense: 50
-  mMaxHealth: 100
-  mMaxThrows: 5
+  mStats: {fileID: 8581948738245670751}
+  mBallMovement: {fileID: 711196935182783211}
+--- !u!114 &8581948738245670751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598324253760046291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03525a0df6b5dd04586866b17d1761a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mLevel: 0
+  mAttributes:
+  - mType: 0
+    mBaseValue: 50
+    mAdditionalValue: 0
+  - mType: 2
+    mBaseValue: 3
+    mAdditionalValue: 0

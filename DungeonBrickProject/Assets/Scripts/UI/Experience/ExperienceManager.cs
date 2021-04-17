@@ -36,15 +36,14 @@ public class ExperienceManager : MonoBehaviour
     public Text mXPComboText;
     public Text mXPText;
 
-
-    public delegate void LevelUp();
-    public static event LevelUp OnLevelUp;
     private void Start()
     {
-        BallMovement.OnThrowOver += ResetCombo;
-        LevelManager.OnLevelOver += ResetCombo;
-        ItemPickerDisplay.OnItemPicked += PerformLevelUp;
+        GameEvents.current.onXPUpdateStart += ResetCombo;
+        GameEvents.current.onLevelUpOver += PerformLevelUp;
+    }
 
+    public void Initialize()
+    {
         mExperienceSlider.value = 0;
         mCurrentXPMax = mFirstLevelXPMax;
         ResetComboText();
@@ -114,6 +113,10 @@ public class ExperienceManager : MonoBehaviour
     {
         SetXPTarget();
         mUpdatingXPBar = mTargetXP != mCurrentXP ? true : false;
+        if (!mUpdatingXPBar)
+        {
+            GameEvents.current.XpUpdateOver();
+        }
     }
 
     private void UpdateXPBar()
@@ -132,13 +135,14 @@ public class ExperienceManager : MonoBehaviour
         {
             if(mCurrentXP >= mCurrentXPMax && !mIslevelingUp)
             {
-                OnLevelUp();
+                GameEvents.current.LevelUpStart();
                 mIslevelingUp = true;
             }
             else
             {
                 mUpdatingXPBar = false;
                 mCurrentXPCombo = 0;
+                GameEvents.current.XpUpdateOver();
             }
         }
     }
@@ -155,6 +159,10 @@ public class ExperienceManager : MonoBehaviour
         SetXPTarget();
         mExperienceSlider.value = mCurrentXP;
         mUpdatingXPBar = mTargetXP != mCurrentXP ? true : false;
+        if (!mUpdatingXPBar)
+        {
+            GameEvents.current.XpUpdateOver();
+        }
         mIslevelingUp = false;
     }
 
@@ -175,7 +183,7 @@ public class ExperienceManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (mUpdatingXPBar)
+        if (mUpdatingXPBar && !mIslevelingUp)
         {
             UpdateXPBar();
             UpdateXPText();

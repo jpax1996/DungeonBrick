@@ -13,15 +13,14 @@ public class ThrowCounterManager : MonoBehaviour
 
     private void Start()
     {
-        BallMovement.OnStartThrow += DecreaseCounter;
+        EntityStats.OnMaxThrowsUpdated += UpdateMaxThrows;
+        GameEvents.current.onThrowStart += DecreaseCounter;
         LevelTransitionController.OnLoadingOutOver += ResetCounter;
-        Initialize();
     }
 
-    private void Initialize()
+    public void Initialize()
     {
-        mPlayerManager = GameManager.GetPlayerManager();
-        SetMaxThrows(mPlayerManager.mMaxThrows);
+        mPlayerManager = GameManager.mInstance.mPlayerManager;
         ResetCounter();
     }
 
@@ -31,6 +30,7 @@ public class ThrowCounterManager : MonoBehaviour
 
     public void ResetCounter()
     {
+        SetMaxThrows(mPlayerManager.mStats.GetTotalAttributeValue(AttributeType.THROWS));
         mThrowCounter = mMaxThrows;
         UpdateThrowCounter();
     }
@@ -41,8 +41,22 @@ public class ThrowCounterManager : MonoBehaviour
         UpdateThrowCounter();
     }
 
+    private void UpdateMaxThrows()
+    {
+        if(mPlayerManager != null)
+        {
+            SetMaxThrows(mPlayerManager.mStats.GetTotalAttributeValue(AttributeType.THROWS));
+            UpdateThrowCounter();
+        }
+    }
+
     private void UpdateThrowCounter()
     {
         mCounterText.text = mThrowCounter + "/" + mMaxThrows + " Throws";
+    }
+
+    public bool IsOutOfThrows()
+    {
+        return mThrowCounter == 0? true:false;
     }
 }

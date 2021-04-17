@@ -10,6 +10,7 @@ public class DisplayInventory : MonoBehaviour
 
     private PlayerManager mPlayerManager;
     private InventoryManager mInventory;
+    private LevelManager mLevelManager;
 
     public int X_START;
     public int Y_START;
@@ -20,15 +21,22 @@ public class DisplayInventory : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mPlayerManager = GameManager.GetPlayerManager();
-        mInventory = GameManager.GetInventoryManager();
+        mPlayerManager = GameManager.mInstance.mPlayerManager;
+        mInventory = GameManager.mInstance.mInventoryManager;
+        mLevelManager = GameManager.mInstance.mLevelManager;
+    }
+    public void Initialize()
+    {
         gameObject.SetActive(false);
         UpdateDisplay();
     }
 
     public void OnClosePressed()
     {
-        mPlayerManager.EnableThrow();
+        if (!mLevelManager.mIsUpdatingUi)
+        {
+            mPlayerManager.EnableThrow();
+        }
         gameObject.SetActive(false);
     }
 
@@ -37,12 +45,11 @@ public class DisplayInventory : MonoBehaviour
         if (!mPlayerManager.IsThrowRunning())
         {
             mPlayerManager.DisableThrow();
-            UpdateDisplay();
             gameObject.SetActive(true);
         }
     }
 
-    private void UpdateDisplay()
+    public void UpdateDisplay()
     {
         for (int i = 0; i < mInventory.mItemList.Count; i++)
         {
@@ -55,7 +62,7 @@ public class DisplayInventory : MonoBehaviour
                 obj.GetComponent<RectTransform>().localPosition = GetPosition(i);
                 obj.GetComponentInChildren<TextMeshProUGUI>().text = slot.mAmount.ToString("n0");
                 Image itemImg = obj.transform.Find("ItemSprite_img").GetComponent<Image>();
-                itemImg.sprite = slot.mItemObject.mItemSprite;
+                itemImg.sprite = slot.mItem.mItemSprite;
                 mItemsDisplayed.Add(slot, obj);
             }
             else
@@ -64,6 +71,15 @@ public class DisplayInventory : MonoBehaviour
             }
         }
     }
+    public void ResetDisplay()
+    {
+        foreach (KeyValuePair<InventorySlot, GameObject> entry in mItemsDisplayed)
+        {
+            Destroy(entry.Value);
+        }
+        mItemsDisplayed.Clear();
+    }
+
     public Vector3 GetPosition(int i)
     {
         return new Vector3(X_START + (X_SPACE_BETWEEN_ITEMS * (i % NUMBER_OF_COLUMN)),Y_START + ((-Y_SPACE_BETWEEN_ITEMS * (i/NUMBER_OF_COLUMN))), 0f);

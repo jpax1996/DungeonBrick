@@ -13,31 +13,35 @@ public class LevelManager : MonoBehaviour {
     private GameObject mPreviousLevel;
     private int mLevelCpt = 0;
     private List<Enemy> mAllEnemyList;
+    private bool mIsLevelOver = false;
 
     private Transform mPlayerSpawnTrans;
     private PlayerManager mPlayerManager;
+    private ThrowCounterManager mThrowManager;
 
-    public delegate void LevelStart();
-    public static event LevelStart OnLevelStart;
-
-    public delegate void LevelOver();
-    public static event LevelOver OnLevelOver;
-
+    public bool mIsUpdatingUi = false;
     const string PLAYER_SPAWN_NAME = "PlayerSpawn";
 
-    public void Initialize(PlayerManager playerManager)
+    private void Start()
     {
-        mPlayerManager = playerManager;
+        GameEvents.current.onThrowOver += EndThrow;
+        GameEvents.current.onXPUpdateOver += UIUpdatesOver;
+        GameEvents.current.onGameStart += StartLevel;
+        PlayerManager.OnKilledEnemy += IsLevelOver;
+        LevelTransitionController.OnLoadingInOver += StartLevel;
+        LevelTransitionController.OnLoadingOutOver += LoadingOutOver;
     }
-
+    public void Initialize()
+    {
+        mPlayerManager = GameManager.mInstance.mPlayerManager;
+        mThrowManager = GameManager.mInstance.mThrowCounterManager;
+        InitializeFirstLevel();
+    }
     // Use this for initialization
     public void InitializeFirstLevel () {
         mAllEnemyList = new List<Enemy>();
         System.Random rnd = new System.Random();
         GameObject[] arr = mEpisode1Levels.OrderBy(x => rnd.Next()).ToArray();
-        PlayerManager.OnKilledEnemy += IsLevelOver;
-        LevelTransitionController.OnLoadingInOver += StartLevel;
-        LevelTransitionController.OnLoadingOutOver += LoadingOutOver;
         SpawnNextLevel();
         ResetPlayer();
     }
@@ -50,7 +54,7 @@ public class LevelManager : MonoBehaviour {
 
     private void ResetPlayer()
     {
-        mPlayerManager.ResetState();
+        mPlayerManager.ResetPosition();
     }
 
     private void SpawnNextLevel()
@@ -60,7 +64,7 @@ public class LevelManager : MonoBehaviour {
             Destroy(mCurrentLevel);
         }
         mCurrentLevel = Instantiate(mEpisode1Levels[mLevelCpt], mLevelStartingTransform.position, mLevelStartingTransform.rotation);
-        
+       
         mPlayerSpawnTrans = mCurrentLevel.transform.Find(PLAYER_SPAWN_NAME);
         mPlayerManager.SetSpawnTransform(mPlayerSpawnTrans);
         mCurrentLevel.GetComponent<LevelSpawner>().SpawnEntities();
@@ -92,15 +96,39 @@ public class LevelManager : MonoBehaviour {
                 return;
             }
         }
-        OnLevelOver();
+        GameEvents.current.ThrowOver();
+        mIsLevelOver = true;
     }
 
     private void StartLevel()
     {
-        OnLevelStart();
+        mIsLevelOver = false;
+        GameEvents.current.LevelStart();
     }
 
-    void Update()
+    void EndThrow()
     {
+        mPlayerManager.StopMovement();
+        GameEvents.current.XpUpdateStart();
+    }
+
+    void UIUpdatesOver()
+    {
+        mIsUpdatingUi = false;
+        if (mIsLevelOver)
+        {
+            GameEvents.current.LevelOver();
+        }
+        else
+        {
+            if (mThrowManager.IsOutOfThrows())
+            {
+                GameEvents.current.GameOver();
+            }
+            else
+            {
+                mPlayerManager.EnableThrow();
+            }
+        }
     }
 }

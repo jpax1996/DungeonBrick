@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ItemDatabase : ScriptableObject
 {
-    public List<Item> mAllItems;
+    public List<GameObject> mAllItems;
     private InventoryManager mInventoryManager;
 
     public void Initialize(InventoryManager inventoryManager)

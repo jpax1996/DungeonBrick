@@ -8,13 +8,6 @@ public class BallMovement : MonoBehaviour
     public int MAX_AIMING_ANGLE = 80;
     public TrajectoryDisplay mTrajectorySystem;
 
-    public delegate void StartThrow();
-    public static event StartThrow OnStartThrow;
-    public delegate void SpellHit();
-    public static event SpellHit OnSpellHit;
-    public delegate void ThrowOver();
-    public static event ThrowOver OnThrowOver;
-
     private Vector3 mBallVelocity;
     private bool mIsBallRolling;
     private bool mAimingEnbaled;
@@ -61,7 +54,7 @@ public class BallMovement : MonoBehaviour
                                 mIsBallRolling = true;
                                 mTrajectorySystem.SetActive(false);
                                 this.GetComponent<TrailRenderer>().enabled = true;
-                                OnStartThrow();
+                                GameEvents.current.ThrowStart();
                             }
                             break;
                     }
@@ -81,7 +74,7 @@ public class BallMovement : MonoBehaviour
                         mIsBallRolling = true;
                         mTrajectorySystem.SetActive(false);
                         this.GetComponent<TrailRenderer>().enabled = true;
-                        OnStartThrow();   
+                        GameEvents.current.ThrowStart();
                     }
                 }
             }
@@ -157,8 +150,7 @@ public class BallMovement : MonoBehaviour
             }
             else if (collision.gameObject.name == "BotWallCollider")
             {
-                StopBallMovement();
-                OnThrowOver();
+                GameEvents.current.ThrowOver();
             }
         }
     }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerManager : EntityStats
+public class PlayerManager : MonoBehaviour
 {
+    public EntityStats mStats;
     public BallMovement mBallMovement;
     private Transform mSpawnTransform;
     private ExperienceManager mExperienceManager;
@@ -13,29 +14,30 @@ public class PlayerManager : EntityStats
     public delegate void KilledEnemy();
     public static event KilledEnemy OnKilledEnemy;
 
-    private void Awake()
-    {
-        Initialize();
-    }
     // Start is called before the first frame update
     void Start()
     {
-        LevelManager.OnLevelOver += StopMovement;
-        LevelManager.OnLevelStart += EnableThrow;
-        EnableThrow();
-        Initialize();
+        GameEvents.current.onLevelStart += EnableThrow;
+        GameEvents.current.onGameRestart += ResetState;
+        mBallMovement = this.GetComponent<BallMovement>();
     }
-    
+
+    public void Initialize()
+    {
+        mExperienceManager = GameManager.mInstance.mExperienceManager;
+        mInventoryManager = GameManager.mInstance.mInventoryManager;
+        mStats.Initialize();
+    }
+
+    private void ResetState()
+    {
+        mInventoryManager.ResetInventory();
+        //mStats.ResetStats();
+    }
+
     public void SetSpawnTransform(Transform spawnTransform)
     {
         mSpawnTransform = spawnTransform;
-    }
-
-    public void Initialize ()
-    {
-        mBallMovement = this.GetComponent<BallMovement>();
-        mExperienceManager = GameManager.GetExperienceManager();
-        mInventoryManager = GameManager.GetInventoryManager(); 
     }
 
     public void OnHitEnemy(GameObject EnemyObj)
@@ -69,14 +71,14 @@ public class PlayerManager : EntityStats
         return mBallMovement.IsBallRolling();
     }
 
-    public void ResetState()
+    public void ResetPosition()
     {
         this.transform.position = mSpawnTransform.position;
         this.transform.rotation= mSpawnTransform.rotation;
     }
-    /*
+    
     private void OnApplicationQuit()
     {
-        mInventoryManager.mItemList.Clear();
-    }*/
+        mInventoryManager.ResetInventory();
+    }
 }

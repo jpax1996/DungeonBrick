@@ -12,6 +12,8 @@ public class LevelTransitionController : MonoBehaviour
     private GameObject mCanvasObject;
     private bool mStartLoadingIn;
     private bool mStartLoadingOut;
+    private bool mIsFinalLoadOut = false;
+    private bool mIsGameRestart = false;
 
     public delegate void LoadingInEnded();
     public static event LoadingInEnded OnLoadingInOver;
@@ -28,9 +30,14 @@ public class LevelTransitionController : MonoBehaviour
     {
         mLoadImage = this.GetComponent<Image>();
         mCanvasObject = this.transform.parent.gameObject;
-        mCanvasObject.SetActive(false);
-        mLoadImage.material.SetFloat(CUTOFF_SHADER_REFERENCE, 1.1f);
-        LevelManager.OnLevelOver += StartLoadingOut;
+        GameEvents.current.onLevelOver += StartLoadingOut;
+        GameEvents.current.onGameStart += StartFirstLoadingIn;
+    }
+
+    public void StartFirstLoadingIn()
+    {
+        mLoadImage.material.SetFloat(CUTOFF_SHADER_REFERENCE, -0.1f - mLoadImage.material.GetFloat(EDGE_SMOOTHING_SHADER_REFERENCE));
+        StartLoadingIn();
     }
 
     // Update is called once per frame
@@ -65,6 +72,13 @@ public class LevelTransitionController : MonoBehaviour
         }
     }
 
+    public void FinalLoadOut(bool restartGame)
+    {
+        mIsFinalLoadOut = true;
+        mIsGameRestart = restartGame;
+        StartLoadingOut();
+    }
+
     public void StartLoadingOut()
     {
         mStartLoadingOut = true;
@@ -79,9 +93,20 @@ public class LevelTransitionController : MonoBehaviour
         if (mLoadImage.material.GetFloat(CUTOFF_SHADER_REFERENCE) == -0.1f - mLoadImage.material.GetFloat(EDGE_SMOOTHING_SHADER_REFERENCE))
         {
             mStartLoadingOut = false;
-            mCanvasObject.SetActive(false);
-            OnLoadingOutOver();
-            StartLoadingIn();
+            if (!mIsFinalLoadOut)
+            {
+                OnLoadingOutOver();
+                StartLoadingIn();
+            }
+            else
+            {
+                mIsFinalLoadOut = false;
+                if (mIsGameRestart)
+                {
+                    GameManager.mInstance.RestartGame();
+                    mIsGameRestart = false;
+                }
+            }
         }
     }
 }

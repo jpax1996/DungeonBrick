@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : EntityStats {
+public class Enemy : MonoBehaviour{
 
+    public EntityStats mStats;
     public HealthBar mHealthBar;
     private bool mIsAlive;
     private Material mFlashMaterial;
@@ -15,19 +16,21 @@ public class Enemy : EntityStats {
     public static event EnemyDead OnEnemyDead;
 
     const string FLASH_MATERIAL_NAME = "Flash_Material";
+
     private void Start()
     {
         mSpriteRenderer = this.GetComponent<SpriteRenderer>();
         mFlashMaterial = Resources.Load(FLASH_MATERIAL_NAME, typeof(Material)) as Material;
         mDefaultMaterial = mSpriteRenderer.material;
         mEnemyAnimator = this.GetComponent<Animator>();
-        mHealthBar.SetMaxHealth(mMaxHealth);
-        mHealthBar.SetCurrentHealth(mMaxHealth);
+        mStats.Initialize();
+        mHealthBar.SetMaxHealth(mStats.GetTotalAttributeValue(AttributeType.HEALTH));
+        mHealthBar.SetCurrentHealth(mStats.GetTotalAttributeValue(AttributeType.HEALTH));
         mIsAlive = true;
     }
 
     public bool OnHit(EntityStats PlayerStats) {
-        int damage = CalculateDamageReceived(PlayerStats);
+        int damage = mStats.CalculateDamageReceived(PlayerStats);
         mSpriteRenderer.material = mFlashMaterial;
         Invoke("ResetMaterial", .1f);
 

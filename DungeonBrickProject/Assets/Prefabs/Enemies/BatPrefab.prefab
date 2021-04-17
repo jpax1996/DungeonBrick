@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 61872431331319216}
   - component: {fileID: 50603473801521308}
   - component: {fileID: 114041905217075556}
+  - component: {fileID: 2289460061439623602}
   m_Layer: 11
   m_Name: BatPrefab
   m_TagString: Enemy_Tag
@@ -165,12 +166,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8f5a674d479b649b59961b180789ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mLevel: 1
-  mBaseDamage: 5
-  mAdditionalDamage: 5
-  mBaseDefense: 30
-  mMaxHealth: 100
+  mStats: {fileID: 2289460061439623602}
   mHealthBar: {fileID: 461972061679392616}
+--- !u!114 &2289460061439623602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911355742786932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03525a0df6b5dd04586866b17d1761a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mLevel: 0
+  mAttributes:
+  - mType: 1
+    mBaseValue: 100
+    mAdditionalValue: 0
+  mBaseDamage: 0
+  mAdditionalBaseDamage: 0
+  mDamageModifier: 0
+  mMaxThrows: 0
+  mAdditionalMaxThrows: 0
 --- !u!1 &450593095905174446
 GameObject:
   m_ObjectHideFlags: 0

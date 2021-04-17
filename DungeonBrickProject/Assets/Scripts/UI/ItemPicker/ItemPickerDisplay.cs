@@ -8,10 +8,7 @@ public class ItemPickerDisplay : MonoBehaviour
     public GameObject[] mItemButtons;
     public ItemPickerManager mItemPicker;
     public int mNumberItemsDisplayed;
-    public delegate void ItemPicked();
-    public static event ItemPicked OnItemPicked;
 
-    private PlayerManager mPlayerManager;
     private InventoryManager mInventory;
 
     string ITEM_TITLE_ENTITY = "ItemTitle_txt";
@@ -21,26 +18,21 @@ public class ItemPickerDisplay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ExperienceManager.OnLevelUp += OnOpenDisplay;
-
-        mPlayerManager = GameManager.GetPlayerManager();
-        mInventory = GameManager.GetInventoryManager();
-
+        GameEvents.current.onLevelUpStart += OnOpenDisplay;
+        mInventory = GameManager.mInstance.mInventoryManager;
         gameObject.SetActive(false);
     }
 
     public void OnOpenDisplay()
     {
-        mPlayerManager.DisableThrow();
         SetItemsDisplayed();
         gameObject.SetActive(true);
     }
 
     public void OnCloseDisplay()
     {
-        mPlayerManager.EnableThrow();
         gameObject.SetActive(false);
-        OnItemPicked();
+        GameEvents.current.LevelUpOver();
     }
 
     private void SetItemsDisplayed()
@@ -63,7 +55,9 @@ public class ItemPickerDisplay : MonoBehaviour
         buttonTitle.text = item.mItemName;
         buttonDescription.text = item.mItemDescription;
         buttonImage.sprite = item.mItemSprite;
-        button.GetComponent<Button>().onClick.AddListener(delegate { 
+        Button itemButton = button.GetComponent<Button>();
+        itemButton.onClick.RemoveAllListeners();
+        itemButton.onClick.AddListener(delegate { 
             mInventory.ItemPickup(item, 1);
             OnCloseDisplay();
         });
